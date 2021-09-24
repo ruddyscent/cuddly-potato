@@ -45,20 +45,9 @@ class KorbitWsClient(qtc.QObject):
         self.received.emit(data)
 
 
-class MyWindow(qtw.QMainWindow):
+class MainObject(qtc.QObject):
     def __init__(self):
         super().__init__()
-        self.setGeometry(200, 200, 400, 200)
-        self.setWindowTitle("Korbit Websocket")
-
-        # widget
-        self.label = qtw.QLabel("Bitcoin: ", self)
-        self.label.move(10, 10)
-
-        # QLineEdit 
-        self.line_edit = qtw.QLineEdit(" ", self)
-        self.line_edit.resize(150, 30)
-        self.line_edit.move(100, 10)
 
         self.ws = KorbitWsClient()
         # self.producer_thread = qtc.QThread()
@@ -71,18 +60,14 @@ class MyWindow(qtw.QMainWindow):
         timestamp = data.get('timestamp')
         data_dict = data.get('data')
         last = data_dict.get('last')
-
-        if last is not None:
-            current_price = int(last)
-            self.line_edit.setText(format(current_price, ",d"))
-
         now = datetime.datetime.fromtimestamp(int(timestamp) / 1000)
-        self.statusBar().showMessage(str(now))
-
+        
 
 if __name__ == "__main__":
-    # Main process
-    app = qtw.QApplication(sys.argv)
-    mywindow = MyWindow()
-    mywindow.show()
+    import signal
+
+    # signal.signal(signal.SIGINT, sigint_handler)
+    app = qtc.QCoreApplication(sys.argv)
+    signal.signal(signal.SIGINT, lambda *x: app.quit())
+    main_object = MainObject()
     sys.exit(app.exec())
