@@ -2,6 +2,7 @@
 
 import datetime
 import json
+import signal
 import sys
 
 from pymongo import MongoClient
@@ -115,8 +116,6 @@ class MainObject(QObject):
 
     
 if __name__ == '__main__':
-    import signal
-
     app = QCoreApplication(sys.argv)
     signal.signal(signal.SIGINT, lambda *x: app.quit())
     main_object = MainObject()
